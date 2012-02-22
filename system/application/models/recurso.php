@@ -24,7 +24,7 @@ class Recurso extends DataMapper {
 	// Uncomment and edit these two if the class has a model name that
 	//   doesn't convert properly using the inflector_helper.
 	// var $model = 'recurso';
-	var $table = 'roles_users_tasks';
+	var $table = 'roles_tasks_users';
 
 	// You can override the database connections with this option
 	// var $db_params = 'db_config_name';
@@ -35,19 +35,7 @@ class Recurso extends DataMapper {
 	// --------------------------------------------------------------------
 
 	// Insert related models that Recurso can have just one of.
-	var $has_one = array();
-
-	// Insert related models that Recurso can have more than one of.
-	var $has_many = array(
-				'user' => array(
-                      'class' => 'user',
-                      'join_table' => 'roles_users_tasks'
-				),
-				'role' => array(
-                      'class' => 'role',
-                      'join_table' => 'roles_users_tasks'
-				)
-			); 
+	var $has_one = array('task','user','role');
 
 	/* Relationship Examples
 	 * For normal relationships, simply add the model name to the array:

@@ -3,7 +3,7 @@
 	<?php
 		foreach($users as $usr)
 		{
-			$us[$usr->id] = $usr->username;
+			$us[$usr->id] = $usr->name;
 		}
 		foreach($tags as $t)
 		{
@@ -44,7 +44,7 @@
 			<?=form_dropdown('type_id',$ty,'','id="types" class="tipns" title="Filtrar por prioridades"')?>
 			<?=img('static/img/icon/tag.png')?>
 			<?=form_dropdown('tag_id',$tg,'','id="tags" class="tipns" title="Filtrar por categorías"')?>
-			<?=anchor('#','Remover filtros','id="clean"')?>
+			<?=anchor('tasks','Remover filtros')?>
 		</form>
 	</div>
 	<div id="results">
@@ -113,7 +113,8 @@
 		<?else:?>
 			<span>siguiente último ►</span>
 		<?endif?>
-	</p>
+	</p>	
+
 	</div>
 	<script type="text/javascript">
 		$(document).ready(function(){
@@ -125,25 +126,7 @@
 			$('#branches').prepend('<option value="0" selected>Todas</option>');
 			
 			$('#filtros select').change(function(){
-				$('#results').html('<img src="/sgi/static/img/ajaxLoader.gif" />');
-				$.ajax({
-					type: "POST",
-					url: "<?php echo site_url('tasks/filtrar'); ?>",
-					data: $('#filtros form').serialize(),
-					success: function(data){
-						$('#results').html(data);
-					}
-				});
-			})
-			
-			$('#clean').click(function(e){
-				e.preventDefault();
-				$(':input','#f')
-				.not(':button, :submit, :reset, :hidden')
-				.val('')
-				.removeAttr('checked')
-				.removeAttr('selected');
-				$('#results').html('<img src="/sgi/static/img/ajaxLoader.gif" />');
+				$('#results').html('<?=img("static/img/ajaxLoader.gif")?>');
 				$.ajax({
 					type: "POST",
 					url: "<?php echo site_url('tasks/filtrar'); ?>",
@@ -155,7 +138,7 @@
 			})
 			
 			$('#filtros input').keyup(function(){
-				$('#results').html('<img src="/sgi/static/img/ajaxLoader.gif" />');
+				$('#results').html('<?=img("static/img/ajaxLoader.gif")?>');
 				$.ajax({
 					type: "POST",
 					url: "<?php echo site_url('tasks/filtrar'); ?>",
@@ -165,6 +148,8 @@
 					}
 				});
 			})
+			
+			scrollSidebar('.rightsidebar',0);
 		});
 	</script>
 </div>

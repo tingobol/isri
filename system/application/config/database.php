@@ -38,9 +38,9 @@ $active_group = "default";
 $active_record = TRUE;
 
 $db['default']['hostname'] = "localhost";
-$db['default']['username'] = "sgi";
-$db['default']['password'] = "mqEdo92486";
-$db['default']['database'] = "opentic_isri";
+$db['default']['username'] = "root";
+$db['default']['password'] = "";
+$db['default']['database'] = "sgi";
 $db['default']['dbdriver'] = "mysql";
 $db['default']['dbprefix'] = "";
 $db['default']['pconnect'] = TRUE;

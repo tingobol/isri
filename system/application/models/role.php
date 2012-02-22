@@ -47,7 +47,9 @@ class Role extends DataMapper {
 				'join_table' => 'roles_tasks_users'
 			)
 		);
-
+	
+	var $default_order_by = array('role' => 'desc');
+	
 	/* Relationship Examples
 	 * For normal relationships, simply add the model name to the array:
 	 *   $has_one = array('user'); // Role has one User
