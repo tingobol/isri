@@ -4,7 +4,6 @@
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 	<title>SGI</title>
-	
 	<?=link_tag('static/css/yui.css')?>
 	<?=link_tag('static/css/sgi.css')?>
 	<?=link_tag('static/css/chat.css')?>
@@ -52,11 +51,15 @@
 				maxCalls: 0,            // maximum number of calls. 0 = no limit.
 				autoStop: 0             // automatically stop requests after this many returns of the same data. 0 = disabled.
 			}, function(data) {
-				var oldnew = $('#nuevo').html();
-				var oldupdates = $('#updates').html();
-				var oldvencidas = $('#vencidas').html();
-				var oldpostergadas = $('#postponed').html();
-				var oldcomplete = $('#complete').html();
+				var oldnew = parseInt($('#nuevo').html());
+				var oldupdates = parseInt($('#updates').html());
+				var oldvencidas = parseInt($('#vencidas').html());
+				var oldpostergadas = parseInt($('#postponed').html());
+				var oldcomplete = parseInt($('#complete').html());
+				var oldnotificado = parseInt($('#notificaciones').html());
+				var oldall = parseInt($('#all').html());
+				var oldactivas = parseInt($('#activas').html());
+				var oldotros = parseInt($('#otros').html());
 			//	var oldmsg = $('#msg').html();
 				
 				if(oldnew !== data.new)
@@ -83,6 +86,26 @@
 				{
 					$('#complete').html(data.complete).addClass('new');
 					var oldcomplete = data.complete;
+				}
+				if(oldnotificado !== data.notificaciones)
+				{
+					$('#notificaciones').html(data.notificaciones).addClass('new');
+					var oldnotificado = data.notificaciones;
+				}
+				if(oldall !== data.all)
+				{
+					$('#all').html(data.all).addClass('new');
+					var oldall = data.all;
+				}
+				if(oldactivas !== data.activas)
+				{
+					$('#activas').html(data.activas).addClass('new');
+					var oldactivas = data.activas;
+				}
+				if(oldotros !== data.otros)
+				{
+					$('#otros').html(data.otros).addClass('new');
+					var oldotros = data.otros;
 				}
 			/*	if(oldmsg !== data.vencidas)
 				{
@@ -116,6 +139,7 @@
 				<li><?=anchor('users/add_edit/'.$this->session->userdata('id').'/1',img('static/img/white/user.png').' '.$this->session->userdata('name'),'class="nyroModal tipns" title="Modifique su perfil de usuario"')?></li>
 		<!--	<?if($this->session->userdata('admin')):?><li><?=anchor('#',img('static/img/white/cog.png'),'class="tipwe" title="Configurar parámetros del sistema."')?></li><?endif?>	!-->
 				<li><?=anchor('/auth/logout',img('static/img/white/on-off.png').' Salir','class="tipwe" title="Haga click aquí para cerrar sesión."')?> </li>
+				<li><?=date('h:i:s')?></li>
 			</ul>
 		</div>
 		<div id="bd">
@@ -129,6 +153,28 @@
 			</div>
 		</div>
 	</div>
-</body>
+<!-- Sidebars fixed	
+<script type="text/javascript">
+function scrollSidebar(e,padding)
+{
+	var $sidebar   = $(e),
+        $window    = $(window),
+        offset     = $sidebar.offset(),
+        topPadding = padding;
 
+    $window.scroll(function() {
+        if ($window.scrollTop() > offset.top) {
+            $sidebar.stop().animate({
+                marginTop: $window.scrollTop() - offset.top + topPadding
+            });
+        } else {
+            $sidebar.stop().animate({
+                marginTop: 0
+            });
+        }
+    });
+}
+</script>
+-->
+</body>
 </html>

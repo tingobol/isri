@@ -61,7 +61,8 @@ class Task extends DataMapper {
 			),
 			'task' => array(
 				'other_field' => 'relatedtask'
-			)
+			),
+			'recurso'
 		);
 
 	/* Relationship Examples

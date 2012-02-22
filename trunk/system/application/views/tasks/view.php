@@ -10,7 +10,7 @@
 						<?=anchor('tasks/marcar/1/'.$task->id, img('static/img/white/round_checkmark.png'),'class="tipns" title="Marcar como no leida"')?>
 					<?php endif?>
 				<?php endif?>
-				<?if(($task->user_id == $this->session->userdata('id')) OR ($this->session->userdata('admin'))):?>
+				<?if(($this->session->userdata('admin'))):?>
 					<?=anchor('tasks/add_edit/'.$task->id, img('static/img/white/pencil.png'),'class="modal tipns" title="Editar esta TAP"')?>
 					<?=anchor('tasks/delete_task/'.$task->id, img('static/img/white/trash.png'),'class="tipns" title="Eliminar esta TAP" onClick="return confirm(\'¿Está seguro de eliminar este TAP?\')"')?>
 				<?endif?>
@@ -69,19 +69,28 @@
 						<th class="right">Restante</th>
 					</tr>
 					<?foreach($task->relatedtask as $t):?>
+					<?if(($t->user_id == $this->session->userdata('id')) OR ($this->session->userdata('admin'))):?>
 					<tr>
 						<td class="status">
 							<span class="<?=$t->status->status?>"><?=$t->status->status?></span>
 						</td>
-						<td class="subject"><?=anchor('tasks/view/'.$t->slug,character_limiter($t->subject, 30),'title="'.$t->subject.'"')?></td>
+						<td class="subject">
+						<?=anchor('tasks/view/'.$t->slug,character_limiter($t->subject, 30),'title="'.$t->subject.'"')?>
+						</td>
 						<td class="right"><?=timespan(time(),$t->end_date)?></td>
 					</tr>
+					<?php endif?>					
 					<?endforeach;?>
 				</table>
 			<?else:?>
 				<p>Este TAP no posee tareas dependientes.</p>
 			<?endif?>
 			<?endif?>
+			<h4>Agregar un comentario</h4>
+			<?=form_open('tasks/add_comment/'.$task->id)?>
+			<p><?=form_textarea(array('name' => 'comment','style' => 'width:97%; height:100px; padding:10px;', 'title' => 'Puede incluir etiquetas HTML básicas como a, li, ul, etc.', 'class' => 'tipwe'))?></p>
+			<?=form_submit('comentar','Enviar comentario')?>
+			<p></p>
 			<?if($task->comment->exists()):?>
 			<h4>Comentarios</h4>
 				<div class="comments">
@@ -97,15 +106,10 @@
 					<?endforeach;?>
 				</div>
 			<?endif;?>
-			
-			<h4>Agregar un comentario</h4>
-			<?=form_open('tasks/add_comment/'.$task->id)?>
-			<p><?=form_textarea(array('name' => 'comment','style' => 'width:97%; height:100px; padding:10px;', 'title' => 'Puede incluir etiquetas HTML básicas como a, li, ul, etc.', 'class' => 'tipwe'))?></p>
-			<?=form_submit('comentar','Enviar comentario')?>
 		</div>
 	</div>
 	<div class="yui-u">
-		<div class="pad">
+		<div class="pad task">
 			<h4>Detalles de TAP</h4>
 			<?if(($task->user_id == $this->session->userdata('id')) OR ($this->session->userdata('admin'))):?>
 			<p><?=anchor('tasks/add_edit/'.$task->id, 'Editar detalles','class="modal"')?></p>
@@ -235,3 +239,9 @@
 		</div>
 	</div>
 </div>
+<script type="text/javascript">
+$(function() {
+	scrollSidebar('.task',0);
+	scrollSidebar('.rightsidebar',0);
+});
+</script>

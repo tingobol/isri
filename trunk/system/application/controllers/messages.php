@@ -148,42 +148,61 @@
 		{
 			$uid = $this->session->userdata('id');
 			$tags = new Tag();
-			$sidebar['etiquetas'] = $tags
-				->where('deleted',0)
-				->where_related('tasks/user','id',$this->session->userdata('id'))
-				->where_related_task('status_id <', 4)
-				->include_related_count('task')
-				->group_by('tag')
-				->get_iterated();
+
+			$sidebar['etiquetas'] = $tags->where('deleted',0)
+										->where_related('task/recurso','user_id',$uid)
+										->where_related('task/recurso','role_id <',4)
+										->where_related('task','status_id <',4)
+										->group_by('tag')
+										->get_iterated();
+				
+			$t = new Task();
 			
-			$sidebar['nuevas'] = $this->db->from('roles_tasks_users')
-									->where('read',1)
-									->where('user_id',$uid)
-									->count_all_results();
+			$sidebar['nuevas'] = $t->where_related_recurso('read',1)
+										->where_related_recurso('user_id',$uid)
+										->where_related_recurso('role_id <',4)
+										->count();
+
+			$t = new Task();
+			$sidebar['updates'] = $t->where_related_recurso('update',1)
+											->where_related_recurso('user_id',$uid)
+											->where_related_recurso('role_id <',4)
+											->count();
 			
-			$sidebar['updates'] = $this->db->from('roles_tasks_users')
-									->where('update',1)
-									->where('user_id',$uid)
-									->count_all_results();
+			$t = new Task();
+			$sidebar['vencidas'] = $t->where('status_id',2)
+											->where_related_recurso('user_id',$uid)
+											->where_related_recurso('role_id <',4)
+											->count();
 			
-			$sidebar['vencidas'] = $this->db->from('roles_tasks_users')
-									->join('tasks','tasks.id = roles_tasks_users.task_id')
-									->where('roles_tasks_users.user_id',$uid)
-									->where('roles_tasks_users.role_id <', 4)
-									->where('tasks.status_id',2)
-									->count_all_results();
-									
-			$sidebar['postergadas'] = $this->db->from('roles_tasks_users')
-									->join('tasks','tasks.id = roles_tasks_users.task_id')
-									->where('roles_tasks_users.user_id',$uid)
-									->where('tasks.status_id',3)
-									->count_all_results();
+			$t = new Task();				
+			$sidebar['postergadas'] = $t->where('status_id',3)
+											->where_related_recurso('user_id',$uid)
+											->where_related_recurso('role_id <',4)
+											->count();
 			
-			$sidebar['complete'] = $this->db->from('roles_tasks_users')
-									->join('tasks','tasks.id = roles_tasks_users.task_id')
-									->where('roles_tasks_users.user_id',$uid)
-									->where('tasks.status_id',4)
-									->count_all_results();
+			$t = new Task();
+			$sidebar['complete'] = $t->where('status_id',4)
+											->where_related_recurso('user_id',$uid)
+											->where_related_recurso('role_id <',4)
+											->count();
+			$t = new Task();
+			$sidebar['notificaciones'] = $t->where_related_recurso('user_id',$uid)
+											->where_related_recurso('role_id',4)
+											->count();
+											
+			$t = new Task();
+			$sidebar['all'] = $t->where_related_recurso('user_id',$uid)
+											->count();
+											
+			$t = new Task();
+			$sidebar['activas'] = $t->where('status_id',1)
+										->where_related_recurso('user_id',$uid)
+										->where_related_recurso('role_id <',4)
+										->count();	
+										
+			$t = new Task();
+			$sidebar['otros'] = $t->query('SELECT * FROM tasks WHERE id NOT IN (SELECT task_id FROM roles_tasks_users WHERE user_id = ?)',$uid)->count();
 									
 			$active = $this->db->select('user_data')
 											->from('ci_sessions')

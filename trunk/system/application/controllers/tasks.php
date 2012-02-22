@@ -14,42 +14,61 @@
 		{
 			$uid = $this->session->userdata('id');
 			$tags = new Tag();
-			$sidebar['etiquetas'] = $tags
-				->where('deleted',0)
-				->where_related('tasks/user','id',$this->session->userdata('id'))
-				->where_related_task('status_id <', 4)
-				->include_related_count('task')
-				->group_by('tag')
-				->get_iterated();
+
+			$sidebar['etiquetas'] = $tags->where('deleted',0)
+										->where_related('task/recurso','user_id',$uid)
+										->where_related('task/recurso','role_id <',4)
+										->where_related('task','status_id <',4)
+										->group_by('tag')
+										->get_iterated();
+				
+			$t = new Task();
 			
-			$sidebar['nuevas'] = $this->db->from('roles_tasks_users')
-									->where('read',1)
-									->where('user_id',$uid)
-									->count_all_results();
+			$sidebar['nuevas'] = $t->where_related_recurso('read',1)
+										->where_related_recurso('user_id',$uid)
+										->where_related_recurso('role_id <',4)
+										->count();
+
+			$t = new Task();
+			$sidebar['updates'] = $t->where_related_recurso('update',1)
+											->where_related_recurso('user_id',$uid)
+											->where_related_recurso('role_id <',4)
+											->count();
 			
-			$sidebar['updates'] = $this->db->from('roles_tasks_users')
-									->where('update',1)
-									->where('user_id',$uid)
-									->count_all_results();
+			$t = new Task();
+			$sidebar['vencidas'] = $t->where('status_id',2)
+											->where_related_recurso('user_id',$uid)
+											->where_related_recurso('role_id <',4)
+											->count();
 			
-			$sidebar['vencidas'] = $this->db->from('roles_tasks_users')
-									->join('tasks','tasks.id = roles_tasks_users.task_id')
-									->where('roles_tasks_users.user_id',$uid)
-									->where('roles_tasks_users.role_id <', 4)
-									->where('tasks.status_id',2)
-									->count_all_results();
-									
-			$sidebar['postergadas'] = $this->db->from('roles_tasks_users')
-									->join('tasks','tasks.id = roles_tasks_users.task_id')
-									->where('roles_tasks_users.user_id',$uid)
-									->where('tasks.status_id',3)
-									->count_all_results();
+			$t = new Task();				
+			$sidebar['postergadas'] = $t->where('status_id',3)
+											->where_related_recurso('user_id',$uid)
+											->where_related_recurso('role_id <',4)
+											->count();
 			
-			$sidebar['complete'] = $this->db->from('roles_tasks_users')
-									->join('tasks','tasks.id = roles_tasks_users.task_id')
-									->where('roles_tasks_users.user_id',$uid)
-									->where('tasks.status_id',4)
-									->count_all_results();
+			$t = new Task();
+			$sidebar['complete'] = $t->where('status_id',4)
+											->where_related_recurso('user_id',$uid)
+											->where_related_recurso('role_id <',4)
+											->count();
+			$t = new Task();
+			$sidebar['notificaciones'] = $t->where_related_recurso('user_id',$uid)
+											->where_related_recurso('role_id',4)
+											->count();
+											
+			$t = new Task();
+			$sidebar['all'] = $t->where_related_recurso('user_id',$uid)
+											->count();
+											
+			$t = new Task();
+			$sidebar['activas'] = $t->where('status_id',1)
+										->where_related_recurso('user_id',$uid)
+										->where_related_recurso('role_id <',4)
+										->count();	
+										
+			$t = new Task();
+			$sidebar['otros'] = $t->query('SELECT * FROM tasks WHERE id NOT IN (SELECT task_id FROM roles_tasks_users WHERE user_id = ?)',$uid)->count();
 									
 			$active = $this->db->select('user_data')
 											->from('ci_sessions')
@@ -67,6 +86,142 @@
 			}
 			
 			return $sidebar;
+		}
+		
+		function notify($what,$page = NULL)
+		{
+			$uid = $this->session->userdata('id');
+			$t = new Task();
+			switch($what)
+			{
+				case 'new':
+					$data['tasks'] = $t->where_related_recurso('read',1)
+											->where_related_recurso('user_id',$uid)
+											->where_related_recurso('role_id <',4)
+											->get_paged_iterated($page,20);
+					break;
+				case 'activas':
+					$data['tasks'] = $t->where('status_id',1)
+											->where_related_recurso('user_id',$uid)
+											->where_related_recurso('role_id <',4)
+											->get_paged_iterated($page,20);
+					break;
+				case 'updated':
+					$data['tasks'] = $t->where_related_recurso('update',1)
+											->where_related_recurso('user_id',$uid)
+											->where_related_recurso('role_id <',4)
+											->get_paged_iterated($page,20);
+					break;
+				case 'due':
+					$data['tasks'] = $t->where('status_id',2)
+											->where_related_recurso('user_id',$uid)
+											->where_related_recurso('role_id <',4)
+											->get_paged_iterated($page,20);
+					break;
+				case 'complete':
+					$data['tasks'] = $t->where('status_id',4)
+											->where_related_recurso('user_id',$uid)
+											->where_related_recurso('role_id <',4)
+											->get_paged_iterated($page,20);
+					break;
+				case 'postponed':
+					$data['tasks'] = $t->where('status_id',3)
+											->where_related_recurso('user_id',$uid)
+											->where_related_recurso('role_id <',4)
+											->get_paged_iterated($page,20);
+					break;
+				case 'notificado':
+					$data['tasks'] = $t->where_related_recurso('user_id',$uid)
+											->where_related_recurso('role_id',4)
+											->get_paged_iterated($page,20);	
+					break;
+				case 'all':
+					$data['tasks'] = $t->where('status_id',1)
+											->where_related_recurso('user_id',$uid)
+											->get_paged_iterated($page,20);	
+					break;
+				case 'otros':
+					$data['tasks'] = $t->query('SELECT * FROM tasks WHERE user_id != '.$uid.' AND id NOT IN (SELECT task_id FROM roles_tasks_users WHERE user_id = '.$uid.')')->get_paged_iterated($page,20);
+					break;
+			}
+			$tags = new Tag();
+			$data['tags'] = $tags->select('id,tag')->order_by('tag')->get_iterated();
+			
+			$role = new Role();
+			$data['roles'] = $role->select('id,role')->order_by('role')->get_iterated();
+			
+			$user = new User();
+			$data['users'] = $user->select('id,name')->order_by('name')->get_iterated();
+			
+			$types = new Type();
+			$data['types'] = $types->select('id,type')->order_by('type')->get_iterated();
+			
+			$status = new Status();
+			$data['status'] = $status->select('id,status')->order_by('status')->get_iterated();
+			
+			$branches = new Branch();
+			$data['branches'] = $branches->select('id,name')->order_by('name')->get_iterated();
+			
+			$this->template->write_view('content', 'tasks/index',$data);
+			$this->template->write_view('sidebar', 'sidebar/menu',$this->sidebar());
+			$this->template->render();
+		}
+		
+		function periodical()
+		{
+			$uid = $this->session->userdata('id');
+			
+			$t = new Task();
+			$update['activas'] = $t->where('status_id',1)
+										->where_related_recurso('user_id',$uid)
+										->where_related_recurso('role_id <',4)
+										->count();
+			
+			$t = new Task();
+			$update['new'] = $t->where_related_recurso('read',1)
+										->where_related_recurso('user_id',$uid)
+										->where_related_recurso('role_id <',4)
+										->count();
+			$t = new Task();
+			$update['updates'] = $t->where_related_recurso('update',1)
+											->where_related_recurso('user_id',$uid)
+											->where_related_recurso('role_id <',4)
+											->count();
+			
+			$this->db->where('status_id !=',2)
+					->where('completed IS NULL')
+					->where('end_date < NOW()')
+					->update('tasks', array('status_id' => 2, 'updated' => mdate('%Y-%m-%d %H:%i')));
+			
+			$t = new Task();
+			$update['vencidas'] = $t->where('status_id',2)
+											->where_related_recurso('user_id',$uid)
+											->where_related_recurso('role_id <',4)
+											->count();
+			$t = new Task();					
+			$update['postergadas'] = $t->where('status_id',3)
+											->where_related_recurso('user_id',$uid)
+											->where_related_recurso('role_id <',4)
+											->count();
+			$t = new Task();
+			$update['complete'] = $t->where('status_id',4)
+											->where_related_recurso('user_id',$uid)
+											->where_related_recurso('role_id <',4)
+											->count();
+											
+			$t = new Task();
+			$update['notificaciones'] = $t->where_related_recurso('role_id',4)
+											->where_related_recurso('user_id',$uid)
+											->count();
+											
+			$t = new Task();
+			$update['all'] = $t->where_related_recurso('user_id',$uid)
+											->count();
+											
+			$t = new Task();
+			$update['otros'] = $t->query('SELECT * FROM tasks WHERE id NOT IN (SELECT task_id FROM roles_tasks_users WHERE user_id = ?)',$uid)->count();
+										
+			echo $update = json_encode($update);
 		}
 		
 		function regexp($txt)
@@ -129,22 +284,22 @@
 								->get_paged_iterated($page,20);
 			
 			$tags = new Tag();
-			$data['tags'] = $tags->select('id,tag')->order_by('tag','asc')->get();
+			$data['tags'] = $tags->select('id,tag')->order_by('tag')->get_iterated();
 			
 			$role = new Role();
-			$data['roles'] = $role->select('id,role')->get();
+			$data['roles'] = $role->select('id,role')->order_by('role')->get_iterated();
 			
 			$user = new User();
-			$data['users'] = $user->select('id,username')->get();
+			$data['users'] = $user->select('id,name')->order_by('name')->get_iterated();
 			
 			$types = new Type();
-			$data['types'] = $types->select('id,type')->get();
-			
-			$br = new Branch();
-			$data['branches'] = $br->select('id,name')->get();
+			$data['types'] = $types->select('id,type')->order_by('type')->get_iterated();
 			
 			$status = new Status();
-			$data['status'] = $status->select('id,status')->get();
+			$data['status'] = $status->select('id,status')->order_by('status')->get_iterated();
+			
+			$branches = new Branch();
+			$data['branches'] = $branches->select('id,name')->order_by('name')->get_iterated();
 			
 			$this->template->write_view('content', 'tasks/index',$data);
 		}
@@ -163,11 +318,11 @@
 			{
 				$tasks->where_related_user('id',$this->session->userdata('id'));
 			}
-			if($this->input->post('role_id') != 0) $tasks->where_related_role('id',$this->input->post('role_id'));
-			if($this->input->post('status_id') != 0) $tasks->where_related_status('id',$this->input->post('status_id'));
-			if($this->input->post('type_id') != 0) $tasks->where_related_type('id',$this->input->post('type_id'));
-			if($this->input->post('tag_id') != 0) $tasks->where_related_tag('id',$this->input->post('tag_id'));
-			if($this->input->post('branch_id') != 0) $tasks->where_related_branch('id',$this->input->post('branch_id'));
+			if($this->input->post('role_id') != 0) $tasks->where_related_recurso('role_id',$this->input->post('role_id'));
+			if($this->input->post('status_id') != 0) $tasks->where('status_id',$this->input->post('status_id'));
+			if($this->input->post('type_id') != 0) $tasks->where('type_id',$this->input->post('type_id'));
+			if($this->input->post('tag_id') != 0) $tasks->where('tag_id',$this->input->post('tag_id'));
+			if($this->input->post('branch_id') != 0) $tasks->where('branch_id',$this->input->post('branch_id'));
 			
 			$tasks->get();
 			
@@ -252,7 +407,7 @@
 		{
 			$tasks = new Task();
 			$data['tasks'] = $tasks
-							->where_related_user('id',$this->session->userdata('id'))
+							->where_related_recurso('user_id',$this->session->userdata('id'))
 							->where_related_tag('slug',$tag)
 							->get_paged_iterated($page,20);
 			
@@ -260,22 +415,22 @@
 			$data['tag_name'] = $tag_name->select('tag')->where('slug',$tag)->get();
 			
 			$tags = new Tag();
-			$data['tags'] = $tags->select('id,tag')->get();
+			$data['tags'] = $tags->select('id,tag')->order_by('tag')->get_iterated();
 			
 			$role = new Role();
-			$data['roles'] = $role->select('id,role')->get();
+			$data['roles'] = $role->select('id,role')->order_by('role')->get_iterated();
 			
 			$user = new User();
-			$data['users'] = $user->select('id,username')->get();
+			$data['users'] = $user->select('id,name')->order_by('name')->get_iterated();
 			
 			$types = new Type();
-			$data['types'] = $types->select('id,type')->get();
+			$data['types'] = $types->select('id,type')->order_by('type')->get_iterated();
 			
 			$status = new Status();
-			$data['status'] = $status->select('id,status')->get();
+			$data['status'] = $status->select('id,status')->order_by('status')->get_iterated();
 			
 			$branches = new Branch();
-			$data['branches'] = $branches->select('id,name')->get();
+			$data['branches'] = $branches->select('id,name')->order_by('name')->get_iterated();
 			
 			$this->template->write_view('sidebar', 'sidebar/menu',$this->sidebar());
 			$this->template->write_view('content', 'tasks/index',$data);
@@ -318,90 +473,6 @@
 		{
 			$this->db->where('user_id',$this->session->userdata('id'))->where('task_id',$task)->update('roles_tasks_users',array('read'=>$marca));
 			redirect($this->agent->referrer());
-		}
-		
-		function notify($what,$page = NULL)
-		{
-			$u = new User($this->session->userdata('id'));
-			switch($what)
-			{
-				case 'new':
-					$data['tasks'] = $u->task->where_join_field('user','read',1)->get_paged_iterated($page,20);
-					break;
-				case 'updated':
-					$data['tasks'] = $u->task->where_join_field('user','update',1)->get_paged_iterated($page,20);
-					break;
-				case 'due':
-					$data['tasks'] = $u->task->where('end_date < NOW()')->get_paged_iterated($page,20);
-					break;
-				case 'complete':
-					$data['tasks'] = $u->task->where('status_id',4)->get_paged_iterated($page,20);
-					break;
-				case 'postponed':
-					$data['tasks'] = $u->task->where('status_id',3)->get_paged_iterated($page,20);
-					break;
-			}
-			
-			$tags = new Tag();
-			$data['tags'] = $tags->select('id,tag')->get();
-			
-			$role = new Role();
-			$data['roles'] = $role->select('id,role')->get();
-			
-			$user = new User();
-			$data['users'] = $user->select('id,username')->get();
-			
-			$types = new Type();
-			$data['types'] = $types->select('id,type')->get();
-			
-			$status = new Status();
-			$data['status'] = $status->select('id,status')->get();
-			
-			$branches = new Branch();
-			$data['branches'] = $branches->select('id,name')->get();
-			
-			$this->template->write_view('content', 'tasks/index',$data);
-			$this->template->write_view('sidebar', 'sidebar/menu',$this->sidebar());
-			$this->template->render();
-		}
-		
-		function periodical()
-		{
-			$uid = $this->session->userdata('id');
-			$update['new'] = $this->db->from('roles_tasks_users')
-									->where('read',1)
-									->where('user_id',$uid)
-									->count_all_results();
-			
-			$update['updates'] = $this->db->from('roles_tasks_users')
-									->where('update',1)
-									->where('user_id',$uid)
-									->count_all_results();
-			
-			$this->db->where('status_id !=',2)
-					->where('completed IS NULL')
-					->where('end_date < NOW()')
-					->update('tasks', array('status_id' => 2, 'updated' => mdate('%Y-%m-%d %H:%i')));
-			
-			$update['vencidas'] = $this->db->from('roles_tasks_users')
-									->join('tasks','tasks.id = roles_tasks_users.task_id')
-									->where('roles_tasks_users.user_id',$uid)
-									->where('tasks.status_id',2)
-									->count_all_results();
-									
-			$update['postergadas'] = $this->db->from('roles_tasks_users')
-									->join('tasks','tasks.id = roles_tasks_users.task_id')
-									->where('roles_tasks_users.user_id',$uid)
-									->where('tasks.status_id',3)
-									->count_all_results();	
-			
-			$update['complete'] = $this->db->from('roles_tasks_users')
-									->join('tasks','tasks.id = roles_tasks_users.task_id')
-									->where('roles_tasks_users.user_id',$uid)
-									->where('tasks.status_id',4)
-									->count_all_results();	
-										
-			echo $update = json_encode($update);
 		}
 		
 		function delete_task($task)

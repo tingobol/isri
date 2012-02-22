@@ -21,23 +21,8 @@
  */
 class User extends DataMapper {
 
-	// Uncomment and edit these two if the class has a model name that
-	//   doesn't convert properly using the inflector_helper.
-	// var $model = 'user';
-	// var $table = 'users';
-
-	// You can override the database connections with this option
-	// var $db_params = 'db_config_name';
-
-	// --------------------------------------------------------------------
-	// Relationships
-	//   Configure your relationships below
-	// --------------------------------------------------------------------
-
-	// Insert related models that User can have just one of.
 	var $has_one = array('branch');
 
-	// Insert related models that User can have more than one of.
 	var $has_many = array(
 			'comment' => array(
 				'class' => 'comment',
@@ -55,29 +40,6 @@ class User extends DataMapper {
 				'join_table' => 'tasks'
 			)
 		);
-
-	/* Relationship Examples
-	 * For normal relationships, simply add the model name to the array:
-	 *   $has_one = array('user'); // User has one User
-	 *
-	 * For complex relationships, such as having a Creator and Editor for
-	 * User, use this form:
-	 *   $has_one = array(
-	 *   	'creator' => array(
-	 *   		'class' => 'user',
-	 *   		'other_field' => 'created_user'
-	 *   	)
-	 *   );
-	 *
-	 * Don't forget to add 'created_user' to User, with class set to
-	 * 'user', and the other_field set to 'creator'!
-	 *
-	 */
-
-	// --------------------------------------------------------------------
-	// Validation
-	//   Add validation requirements, such as 'required', for your fields.
-	// --------------------------------------------------------------------
 
 	var $validation = array(
 		'name' => array(
@@ -101,14 +63,8 @@ class User extends DataMapper {
 			'label' => 'Email'
 		)
 	);
-
-	// --------------------------------------------------------------------
-	// Default Ordering
-	//   Uncomment this to always sort by 'name', then by
-	//   id descending (unless overridden)
-	// --------------------------------------------------------------------
-
-	// var $default_order_by = array('name', 'id' => 'desc');
+	
+	var $default_order_by = array('name' => 'asc');
 
 	// --------------------------------------------------------------------
 

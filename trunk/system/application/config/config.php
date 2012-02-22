@@ -11,7 +11,7 @@
 |	http://example.com/
 |
 */
-$config['base_url']	= "http://www.opentic.com.ar/sgi/";
+$config['base_url']	= "http://localhost/isri/";
 
 /*
 |--------------------------------------------------------------------------
