@@ -464,6 +464,25 @@
 			$tags = new Tag();
 			$sidebar['etiquetas'] = $tags->get();
 			$data['task_sidebar'] = TRUE;
+			
+			$prev = new Task();
+			$data['prev'] = $prev->where('id >',$task->id)
+							->where('status_id !=',4)
+							->where_related_recurso('user_id',$this->session->userdata('id'))
+							->where_related_recurso('role_id <',4)
+							->where_related_recurso('read',1)
+							->order_by('type_id ASC, end_date ASC')
+							->limit(1)->get();
+			
+			$next = new Task();
+			$data['next'] = $next->where('id <',$task->id)
+							->where('status_id !=',4)
+							->where_related_recurso('user_id',$this->session->userdata('id'))
+							->where_related_recurso('role_id <',4)
+							->where_related_recurso('read',1)
+							->order_by('type_id ASC, end_date ASC')
+							->limit(1)->get();
+			
 			$this->template->write_view('content', 'tasks/view',$data);
 			$this->template->write_view('sidebar', 'sidebar/menu',$this->sidebar());
 			$this->template->render();

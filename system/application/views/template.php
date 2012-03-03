@@ -10,6 +10,7 @@
 	<?=link_tag('static/css/nyroModal.css')?>
 	<?=link_tag('static/css/tipsy.css')?>
 	<?=link_tag('static/css/calendar.css')?>
+	<?=link_tag('static/css/spellcheck.css')?>
 	<?=link_tag('static/css/sgi-ui/jquery-ui-1.8.9.custom.css')?>
 	<script src="<?=site_url('static/js/jquery-1.4.4.min.js')?>" type="text/javascript"></script>
 	<script src="<?=site_url('static/js/jquery-ui-1.8.9.custom.min.js')?>" type="text/javascript"></script>
@@ -18,6 +19,7 @@
 	<script src="<?=site_url('static/js/jquery.tipsy.js')?>" type="text/javascript"></script>
 	<script src="<?=site_url('static/js/jquery.periodicalupdater.js')?>" type="text/javascript"></script>
 	<script src="<?=site_url('static/js/jquery-ui-timepicker-addon.js')?>" type="text/javascript"></script>
+	<script src="<?=site_url('static/js/jquery.spellcheck.js')?>" type="text/javascript"></script>
 	<script src="<?=site_url('static/js/chat.js')?>" type="text/javascript"></script>
 	<script src="<?=site_url('static/js/FusionCharts.js')?>" type="text/javascript"></script>
 	<!--[if IE 6]>
