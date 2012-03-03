@@ -1,7 +1,7 @@
 <?php $this->load->helper('typography')?>
 <div class="yui-u">
 	<div class="pad">
-		<h2><?=$task->subject?>
+		<h2><?=strtoupper($task->subject)?>
 			<span id="b">
 				<?php if($next->slug):?>
 				<?=anchor('tasks/view/'.$next->slug, img('static/img/white/arrow_right.png'),'class="tipns" title="Tap siguiente"')?>
