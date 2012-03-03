@@ -62,7 +62,14 @@
 					return false;
 				}
 			});
+			
 		});
+	</script>
+	<script type="text/javascript">
+		$("textarea").spellchecker({
+					lang: "es",
+					engine: "google"
+		}).spellchecker("check");
 	</script>
 </head>
 <div class="yui-g">
@@ -152,11 +159,12 @@
 			<td><?=form_label('Categoría','tag_id')?><?=form_dropdown('tag_id',$cat,$task['tag_id'],'id="tag_id"');?></td>
 		</tr>
 		<tr>
-			<td colspan="2"><?=form_label('Descripción','body')?><?=form_textarea(array('name' => 'body', 'value' => $task['body'], 'title' => 'Escriba un texto que describa detalladamente este TAP.'))?></td>
+			<td colspan="2"><?=form_label('Descripción','body')?><?=form_textarea(array('name' => 'body', 'id' => 'spell', 'value' => $task['body'], 'title' => 'Escriba un texto que describa detalladamente este TAP.'))?></td>
 		</tr>
 		<tr>
 			<td>
 				<?
+					echo form_button(array('id' => 'spellcheck', 'content' => 'Revisar ortografía'));
 					if(isset($id)) echo form_submit('enviar','guardar');
 					else echo form_submit('enviar','Siguiente');
 				?>

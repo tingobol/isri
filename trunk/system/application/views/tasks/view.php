@@ -3,6 +3,12 @@
 	<div class="pad">
 		<h2><?=$task->subject?>
 			<span id="b">
+				<?php if($next->slug):?>
+				<?=anchor('tasks/view/'.$next->slug, img('static/img/white/arrow_right.png'),'class="tipns" title="Tap siguiente"')?>
+				<?php endif?>
+				<?php if($prev->slug):?>
+				<?=anchor('tasks/view/'.$prev->slug, img('static/img/white/arrow_left.png'),'class="tipns" title="Tap anterior"')?>			
+				<?php endif?>
 				<?php if($tr):?>
 					<?php if($tr->read):?>
 						<?=anchor('tasks/marcar/0/'.$task->id, img('static/img/white/round.png'),'class="tipns" title="Marcar como leida"')?>
@@ -88,7 +94,7 @@
 			<?endif?>
 			<h4>Agregar un comentario</h4>
 			<?=form_open('tasks/add_comment/'.$task->id)?>
-			<p><?=form_textarea(array('name' => 'comment','style' => 'width:97%; height:100px; padding:10px;', 'title' => 'Puede incluir etiquetas HTML básicas como a, li, ul, etc.', 'class' => 'tipwe'))?></p>
+			<p><?=form_textarea(array('id' => 'spellcheck', 'name' => 'comment','style' => 'width:97%; height:100px; padding:10px;', 'title' => 'Puede incluir etiquetas HTML básicas como a, li, ul, etc.', 'class' => 'tipwe'))?></p>
 			<?=form_submit('comentar','Enviar comentario')?>
 			<p></p>
 			<?if($task->comment->exists()):?>
@@ -244,4 +250,10 @@ $(function() {
 	scrollSidebar('.task',0);
 	scrollSidebar('.rightsidebar',0);
 });
+</script>
+<script type="text/javascript">
+	$("textarea").spellchecker({
+				lang: "es",
+				engine: "google"
+	}).spellchecker("check");
 </script>
