@@ -12,7 +12,7 @@
 		function admin()
 		{
 			$users = new User();
-			$data['users'] = $users->get();
+			$data['users'] = $users->where('deleted',0)->get();
 			$this->load->view('users/admin',$data);
 		}
 		
@@ -79,7 +79,8 @@
 		{
 			$u = new User($id);
 			$this->session->set_flashdata('msg','<p class="success">El usuario <strong>'.$u->username.'</strong> fué eliminado con éxito.</p>');
-			$u->delete();
+			$u->deleted = 1;
+			$u->save();
 			redirect('users/admin');
 		}
 		
