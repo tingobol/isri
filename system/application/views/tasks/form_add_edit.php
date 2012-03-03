@@ -164,7 +164,6 @@
 		<tr>
 			<td>
 				<?
-					echo form_button(array('id' => 'spellcheck', 'content' => 'Revisar ortografía'));
 					if(isset($id)) echo form_submit('enviar','guardar');
 					else echo form_submit('enviar','Siguiente');
 				?>
