@@ -123,9 +123,13 @@
 	<div id="doc3" class="yui-t5">
 		<div id="hd">
 			<ul class="nav">
+				<?php
+					if($mensajes > 0) $mensajes = ' <span class="label">'.$mensajes.'</span>';
+					else $mensajes = "";
+				?>
 				<li><?=anchor('tasks/switch_mode/list',img('static/img/white/monitor.png').' Inicio','class="tipns" title="Ver TAPS por vencer"')?></li>
 				<li><?=anchor('tasks/switch_mode/calendar',img('static/img/white/calendar_1.png').' Calendario','class="tipns" title="Ver calendario de vencimientos"')?></li>
-				<li><?=anchor('messages',img('static/img/white/mail_2.png').' Mensajes','class="tipns" title="Envíe y reciba mensajes entre los usuarios del sistema."')?></li>
+				<li><?=anchor('messages',img('static/img/white/mail_2.png').' Mensajes'.$mensajes,'class="tipns" title="Envíe y reciba mensajes entre los usuarios del sistema."')?></li>
 				<li><?=anchor('users/agenda',img('static/img/white/notepad.png').' Agenda','target="blank" class="tipns" title="Consulte la agenda telefónica del personal."')?></li>
 				<li><?=anchor('tasks/add_edit',img('static/img/white/sq_plus.png').' Agregar TAP','class="modal tipns" title="Haga click aquí para agregar una TAP al sistema."')?></li>
 				<?if($this->session->userdata('admin')):?>

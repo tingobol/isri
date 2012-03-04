@@ -58,6 +58,7 @@ $template['active_template'] = 'default';
 
 $template['default']['template'] = 'template';
 $template['default']['regions'] = array(
+   'menu',
    'content',
    'sidebar'
 );

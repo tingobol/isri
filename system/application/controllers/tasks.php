@@ -9,6 +9,15 @@
 		//	$this->output->enable_profiler(TRUE);
 			if(! $this->session->userdata('id')) redirect('auth/login');
 	    }
+	    
+	    function mensajes()
+	    {
+	    	$mensajes['mensajes'] = $this->db->from('chat')
+								->where('to',$this->session->userdata('username'))
+								->where('recd',0)
+								->count_all_results();
+			return $mensajes;
+	    }
 		
 		function sidebar()
 		{
@@ -163,6 +172,7 @@
 			$data['branches'] = $branches->select('id,name')->order_by('name')->get_iterated();
 			
 			$this->template->write_view('content', 'tasks/index',$data);
+			$this->template->write_view('menu', 'template',$this->mensajes());
 			$this->template->write_view('sidebar', 'sidebar/menu',$this->sidebar());
 			$this->template->render();
 		}
@@ -257,6 +267,7 @@
 			if($this->session->userdata('mode')) $this->calendar_mode($page, $m);
 			else $this->list_mode($page);
 			
+			$this->template->write_view('menu', 'template',$this->mensajes());
 			$this->template->render();
 		}
 		
@@ -301,6 +312,7 @@
 			$branches = new Branch();
 			$data['branches'] = $branches->select('id,name')->order_by('name')->get_iterated();
 			
+			$this->template->write_view('menu', 'template',$this->mensajes());
 			$this->template->write_view('content', 'tasks/index',$data);
 		}
 		
@@ -399,6 +411,7 @@
 			}
 			
 			
+			$this->template->write_view('menu', 'template',$this->mensajes());
 			$data['calendar'] = $this->calendar->generate($y,$m,$calendario);
 			$this->template->write_view('content', 'tasks/index_calendar',$data);
 		}
@@ -433,6 +446,7 @@
 			$data['branches'] = $branches->select('id,name')->order_by('name')->get_iterated();
 			
 			$this->template->write_view('sidebar', 'sidebar/menu',$this->sidebar());
+			$this->template->write_view('menu', 'template',$this->mensajes());
 			$this->template->write_view('content', 'tasks/index',$data);
 			$this->template->render();
 		}
@@ -484,6 +498,7 @@
 							->limit(1)->get();
 			
 			$this->template->write_view('content', 'tasks/view',$data);
+			$this->template->write_view('menu', 'template',$this->mensajes());
 			$this->template->write_view('sidebar', 'sidebar/menu',$this->sidebar());
 			$this->template->render();
 		}
@@ -789,29 +804,4 @@
 			redirect('tasks/add_roles/'.$task);
 		}
 		
-		function test($page = NULL)
-		{
-			$this->load->helper('date');
-			$this->load->helper('text');
-			
-			$tasks = new Task();
-			$data['tasks'] = $tasks->order_by('end_date ASC')->get_paged_iterated($page,5);
-			
-			$this->load->view('test',$data);
-		}
-				
-		function formulario()
-		{
-			if($_POST)
-			{
-				$task = new Task();
-				echo anchor('tasks/formulario','Volver','class="nyroModal"');
-			}
-			else
-			{
-				$this->load->helper('form');
-				$this->load->view('form');
-			}
-		}
-	
 	}
