@@ -20,9 +20,9 @@ OTHER DEALINGS IN THE SOFTWARE.
 */
 
 define ('DBPATH','localhost');
-define ('DBUSER','sgi');
-define ('DBPASS','mqEdo92486');
-define ('DBNAME','opentic_isri');
+define ('DBUSER','root');
+define ('DBPASS','');
+define ('DBNAME','sgi');
 
 session_start();
 

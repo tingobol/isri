@@ -7,6 +7,15 @@
 		{
 			parent::Controller();
 	    }
+	    
+	    function mensajes()
+	    {
+	    	$mensajes['mensajes'] = $this->db->from('chat')
+								->where('to',$this->session->userdata('username'))
+								->where('recd',0)
+								->count_all_results();
+			return $mensajes;
+	    }
 		
 		function index()
 		{
@@ -20,6 +29,7 @@
 			$data['users'] = $user->select('username')->get();
 			
 			$this->template->write_view('sidebar', 'sidebar/menu',$this->sidebar());
+			$this->template->write_view('menu', 'template',$this->mensajes());
 			$this->template->write_view('content', 'messages/index',$data);
 			$this->template->render();
 		}

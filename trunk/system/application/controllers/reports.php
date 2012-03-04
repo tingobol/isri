@@ -8,6 +8,15 @@
 			parent::Controller();
 			$this->load->plugin('charts');
 	    }
+	    
+	    function mensajes()
+	    {
+	    	$mensajes['mensajes'] = $this->db->from('chat')
+								->where('to',$this->session->userdata('username'))
+								->where('recd',0)
+								->count_all_results();
+			return $mensajes;
+	    }
 		
 		function index()
 		{
@@ -38,6 +47,7 @@
 			$data['branches_priority'] = $this->branches_priority($date_from,$date_to);
 			$data['users_priority'] = $this->users_priority($date_from,$date_to);
 			$this->template->write_view('sidebar', 'sidebar/menu',$this->sidebar());
+			$this->template->write_view('menu', 'template',$this->mensajes());
 			$this->template->write_view('content', 'reports/index',$data);
 			$this->template->render();
 		}
