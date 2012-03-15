@@ -358,15 +358,44 @@
 				echo "<td>".$t->type->type."</td>";
 				echo "<td>".timespan($t->start_date)."</td>";
 				echo "<td>";
-				if($t->end_date < time())
-				{
+				if($t->end_date < time()) {
 					echo "Vencida";
 				}
 				else
 				{
-					echo timespan(time(),$t->end_date);
+					$diff = round(($t->end_date - time()) / (60*60*24),1);
+					if(strstr($diff,'.'))
+					{
+						list($days,$hours) = explode('.',$diff);
+					}
+					else {
+						$hours = 0;
+						$days = $diff;
+					}
+					if($days > 7)
+					{
+						$p = 100;
+					}
+					else
+					{
+						$p = ($days/7*100);
+					}
+					switch ($p) {
+						case $p < 30:
+							$c = 'rojo';
+							break;
+						case $p < 60:
+							$c = 'amarillo';
+							break;
+						default:
+							$c = 'verde';
+						
+					}
+					echo '<div class="progress">
+						<div class="meter '.$c.'" style="width:'.$p.'%"></div>
+					</div>
+					<span class="days">'.$days.'d <? if($hours):?>'.$hours*0.24.'hs<?php endif?></span>';
 				}
-				echo "</td>";
 				echo "<td>".$t->comment->count()."</td>";
 				echo "</tr>";
 			}

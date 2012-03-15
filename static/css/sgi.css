@@ -72,6 +72,26 @@ td span.Vencida {
 td span.Finalizada {
 	background: #090;
 }
+div.progress {
+	font-size:8px;
+	height:5px;
+	background: #FFF;
+	border:1px solid #CCC;
+	width:100px;
+}
+div.meter {
+	height:5px;
+	display:block;
+}
+div.verde { background: green;}
+div.amarillo { background: orange;}
+div.rojo { background: red;}
+td span.days {
+	color: #000;
+	font-size:9px;
+	padding:0;
+	text-transform:none;
+}
 td a.tag {
 	border:0;
 	background:#333;

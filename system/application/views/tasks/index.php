@@ -52,7 +52,7 @@
 		<tr>
 			<th colspan="3"><?=img('static/img/icon/info.png')?> TAP</th>
 			<th><?=img('static/img/icon/fire.png')?> Prio.</th>
-			<th><?=img('static/img/icon/clock.png')?> Transcurrido</th>
+			<!--<th><?=img('static/img/icon/clock.png')?> Transcurrido</th>-->
 			<th><?=img('static/img/icon/clock.png')?> Restante</th>
 			<th><?=img('static/img/icon/spechbubble_2.png')?></th>
 		</tr>
@@ -69,18 +69,47 @@
 				<span class="<?=$t->status->status?>"><?=$t->status->status?></span>
 			</td>
 			<td><?=$t->type->type?></td>
-			<td><?=timespan($t->start_date)?></td>
+			<!--<td><?=timespan($t->start_date)?></td>-->
 			<td>
-				<?
-					if($t->end_date < time())
-					{
-						echo "Vencida";
-					}
-					else
-					{
-						echo timespan(time(),$t->end_date);
-					}
-				?>
+				<?php if($t->end_date < time()):?>
+					Vencida
+				<?php else:?>
+					<?php
+						$diff = round(($t->end_date - time()) / (60*60*24),1);
+						if(strstr($diff,'.'))
+						{
+							list($days,$hours) = explode('.',$diff);
+						}
+						else {
+							$hours = 0;
+							$days = $diff;
+						}
+						if($days > 7)
+						{
+							$p = 100;
+						}
+						else
+						{
+							$p = ($days/7*100);
+						}
+						switch ($p) {
+							case $p < 30:
+								$c = 'rojo';
+								break;
+							case $p < 60:
+								$c = 'amarillo';
+								break;
+							default:
+								$c = 'verde';
+							
+						}
+					?>
+					
+					<div class="progress">
+						<div class="meter <?=$c?>" style="width:<?=$p?>%"></div>
+					</div>
+					<span class="days"><?=$days?>d <? if($hours):?><?=$hours*.24?>hs<?php endif?></span>
+				<?php endif?>				
 			</td>
 			<td><?=$t->comment->count()?></td>
 		</tr>
@@ -118,6 +147,7 @@
 	</div>
 	<script type="text/javascript">
 		$(document).ready(function(){
+			$('.progressbar').progressbar({ 'value': 20});
 			$('#users').prepend('<option value="0" selected>Todos</option>');
 			$('#roles').prepend('<option value="0" selected>Todos</option>');
 			$('#status').prepend('<option value="0" selected>Todos</option>');
