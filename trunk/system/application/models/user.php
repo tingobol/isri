@@ -38,6 +38,9 @@ class User extends DataMapper {
 				'class' => 'task',
 				'other_field' => 'user',
 				'join_table' => 'tasks'
+			),
+			'recurso' => array(
+				'join_table' => 'roles_tasks_users'
 			)
 		);
 

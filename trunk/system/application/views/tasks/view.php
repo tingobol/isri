@@ -193,29 +193,28 @@
 				</tr>
 			</table>
 			<h4>Recursos asignados</h4>
-			<?if(($task->user_id == $this->session->userdata('id')) OR ($this->session->userdata('admin'))):?>
 			<p><?=anchor('tasks/add_roles/'.$task->id,'Administrar recursos','class="nyroModal"')?></p>
-			<?endif?>
-			<?if($users->num_rows() > 0):?>	
-				<table>
-					<tr>
-						<th>Rol</th>
-						<th class="right">Usuario</th>
-					</tr>
-					<?foreach($users->result() as $r):?>
-					<tr>
-						<td>
-							<?=$r->role?>
-						</td>
-						<td class="right">
-							<?=$r->name?>
-						</td>
-					</tr>
-					<?endforeach;?>
-				</table>
-			<?else:?>
-			<p class="error">No hay recursos asignados.</p>
-			<?endif?>
+			<table>
+				<tr>
+					<th>Rol</th>
+					<th>Leído</th>
+					<th class="right">Usuario</th>
+				</tr>
+				<?foreach($recursos as $r):?>
+				<tr>
+					<td>
+						<?=$r->role->role?>
+					</td>
+					<td>
+						<?=($r->read)?img('static/img/icon/round.png'):img('static/img/icon/round_checkmark.png')?>
+					</td>
+					<td class="right">
+						<?=$r->user->name?>
+					</td>
+				</tr>
+				<?endforeach;?>
+			</table>
+
 			<?if(isset($pete)):?>
 				<h4>Archivos adjuntos</h4>
 				<p><?=anchor('#','Crear nuevo adjunto')?></p>

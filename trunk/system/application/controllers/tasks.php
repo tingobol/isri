@@ -485,17 +485,12 @@
 			$this->load->helper('date');
 			$this->load->helper('text');
 			$task = new Task();
-			$data['task'] = $task->where('slug',$slug)->get();
+			$t = $data['task'] = $task->where('slug',$slug)->get();
 			
 			$this->db->where('user_id',$this->session->userdata('id'))->where('task_id',$task->id)->update('roles_tasks_users',array('update'=>0));
-		
-			$data['users'] = $this->db->select('users.name, roles.role, roles_tasks_users.read')
-														->from('roles_tasks_users')
-														->join('roles','roles.id = roles_tasks_users.role_id')
-														->join('users','users.id = roles_tasks_users.user_id')
-														->join('tasks','tasks.id = roles_tasks_users.task_id')
-														->where('tasks.id',$task->id)
-														->get();
+			
+			$r = new Recurso();
+			$data['recursos'] = $r->where('task_id',$t->id)->get();
 			
 			$data['tr'] = $this->db
 				->select('read,update,role_id')
