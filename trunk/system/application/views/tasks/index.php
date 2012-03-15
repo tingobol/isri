@@ -104,6 +104,7 @@
 							
 						}
 					?>
+					
 					<div class="progress">
 						<div class="meter <?=$c?>" style="width:<?=$p?>%"></div>
 					</div>
