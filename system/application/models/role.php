@@ -45,6 +45,9 @@ class Role extends DataMapper {
 			),
 			'user' => array(
 				'join_table' => 'roles_tasks_users'
+			),
+			'recurso' => array(
+				'join_table' => 'roles_tasks_users'
 			)
 		);
 	
