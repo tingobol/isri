@@ -193,7 +193,9 @@
 				</tr>
 			</table>
 			<h4>Recursos asignados</h4>
+			<?if(($task->user_id == $this->session->userdata('id')) OR ($this->session->userdata('admin')) OR ($tr->role_id == 2)):?>
 			<p><?=anchor('tasks/add_roles/'.$task->id,'Administrar recursos','class="nyroModal"')?></p>
+			<?php endif?>
 			<table>
 				<tr>
 					<th>Rol</th>
