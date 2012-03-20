@@ -394,7 +394,9 @@
 					echo '<div class="progress">
 						<div class="meter '.$c.'" style="width:'.$p.'%"></div>
 					</div>
-					<span class="days">'.$days.'d <? if($hours):?>'.$hours*0.24.'hs<?php endif?></span>';
+					<span class="days">'.$days.'d ';
+					if($hours) echo $hours*0.24.'hs';
+					echo '</span>';
 				}
 				echo "<td>".$t->comment->count()."</td>";
 				echo "</tr>";
@@ -630,8 +632,6 @@
 				$start_date = explode('/', $_POST['start_date']);
 				$start = $start_date[2]."-".$start_date[1]."-".$start_date[0]." ".$_POST['start_hour'];
 			}
-			
-			$tags = explode(', ',$_POST['tags']);
 			
 			if($id)
 			{				
