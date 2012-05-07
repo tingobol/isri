@@ -147,16 +147,16 @@
 			<td colspan="2"><?=form_label('Asunto','subject')?><?=form_input(array('name' => 'subject', 'placeholder' => 'asunto', 'title' => 'Escriba un texto descriptivo para el asunto del TAP.', 'value' => $task['subject']))?></td>
 		</tr>
 		<tr>
+			<td><?=form_label('Prioridad','type_id')?><?=form_dropdown('type_id',$types,$task['type_id'],'id="type_id"');?></td>
+			<td><?=form_label('Categoría','tag_id')?><?=form_dropdown('tag_id',$cat,$task['tag_id'],'id="tag_id"');?></td>
+		</tr>
+		<tr>
 			<td><?=form_label('Fecha de inicio','start_date')?><?=form_input(array('name' => 'start_date', 'placeholder' => 'fecha inicio', 'title' => 'Seleccione una fecha en el calendario para indicar la fecha de inicio del TAP.', 'value' => mdate('%d/%m/%Y',$task['start_date']), 'class' => 'date'))?></td>
 			<td><?=form_label('Fecha de vencimiento','end_date')?><?=form_input(array('name' => 'end_date', 'placeholder' => 'fecha vencimiento', 'value' => mdate('%d/%m/%Y',$task['end_date']), 'class' => 'date', 'title' => 'Seleccione una fecha en el calendario para indicar la fecha de vencimiento del TAP.'))?></td>
 		</tr>
 		<tr>
 			<td><?=form_label('Hora de inicio','start_hour')?><?=form_input(array('name' => 'start_hour', 'placeholder' => 'hora inicio', 'value' => $task['start_hour'], 'class' => 'time', 'title' => 'Seleccione una fecha en el calendario para indicar la fecha de vencimiento del TAP.'))?></td>
 			<td><?=form_label('Hora de vencimiento','end_hour')?><?=form_input(array('name' => 'end_hour', 'placeholder' => 'hora vencimiento', 'value' => $task['end_hour'], 'class' => 'time', 'title' => 'Seleccione una fecha en el calendario para indicar la fecha de vencimiento del TAP.'))?></td>
-		</tr>
-		<tr>
-			<td><?=form_label('Prioridad','type_id')?><?=form_dropdown('type_id',$types,$task['type_id'],'id="type_id"');?></td>
-			<td><?=form_label('Categoría','tag_id')?><?=form_dropdown('tag_id',$cat,$task['tag_id'],'id="tag_id"');?></td>
 		</tr>
 		<tr>
 			<td colspan="2"><?=form_label('Descripción','body')?><?=form_textarea(array('name' => 'body', 'id' => 'spell', 'value' => $task['body'], 'title' => 'Escriba un texto que describa detalladamente este TAP.'))?></td>
