@@ -130,8 +130,8 @@
 	<?=form_hidden('task_id',$r->id)?>
 	<table class="form">
 		<tr>
-			<td><?=form_label('Usuario','user_id')?><?=form_dropdown('user_id',$users_list,'','class="tip" title="Seleccione un usuario de la lista"')?></td>
-			<td><?=form_label('Rol','role_id')?><?=form_dropdown('role_id',$role,'','title="Asigne un rol al usuario seleccionado."')?></td>
+			<td><?=form_label('Usuario','user_id')?><?=form_multiselect('user_id[]',$users_list,'','class="tip" title="Seleccione un usuario de la lista"')?></td>
+			<td valign="top"><?=form_label('Rol','role_id')?><?=form_dropdown('role_id',$role,'','title="Asigne un rol al usuario seleccionado."')?></td>
 			<tr>
 				<td><?if(!empty($users_list)) echo form_submit('enviar','Asignar recurso');?></td>
 				<td><?if($this->session->flashdata('post') OR empty($users_list)) echo anchor('tasks/view/'.$dt->slug,'Finalizar','class=""')?></td>
