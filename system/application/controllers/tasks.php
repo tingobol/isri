@@ -789,14 +789,17 @@
 		{
 			if($_POST)
 			{
-				$data = array(
+				foreach ($_POST['user_id'] as $uid)
+				{
+					$data = array(
 							'role_id' => $_POST['role_id'],
-							'user_id' => $_POST['user_id'],
+							'user_id' => $uid,
 							'task_id' => $task,
 							'read' => 1,
 							'update' => 0,
 						);
-				$this->db->insert('roles_tasks_users',$data);
+					$this->db->insert('roles_tasks_users',$data);
+				}
 				$this->session->set_flashdata('post',TRUE);
 				redirect('tasks/add_roles/'.$task);
 			}
