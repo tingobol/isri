@@ -125,12 +125,12 @@
 	<?endif?>
 	<h4>Asignar nuevo recurso</h4>
 	<?if(!empty($users_list)):?>
-	<p>Seleccione un usuario y asigne el rol correspondiente.</p>
+	<p>Seleccione uno ó más usuarios (ctrl + click) y asigne el rol correspondiente.</p>
 	<?=form_open('tasks/add_roles/'.$this->uri->segment(3), array( 'class' => 'nyroModal' ))?>
 	<?=form_hidden('task_id',$r->id)?>
 	<table class="form">
 		<tr>
-			<td><?=form_label('Usuario','user_id')?><?=form_multiselect('user_id[]',$users_list,'','class="tip" title="Seleccione un usuario de la lista"')?></td>
+			<td><?=form_label('Usuarios','user_id')?><?=form_multiselect('user_id[]',$users_list,'','class="tip" title="Seleccione un usuario de la lista"')?></td>
 			<td valign="top"><?=form_label('Rol','role_id')?><?=form_dropdown('role_id',$role,'','title="Asigne un rol al usuario seleccionado."')?></td>
 			<tr>
 				<td><?if(!empty($users_list)) echo form_submit('enviar','Asignar recurso');?></td>
