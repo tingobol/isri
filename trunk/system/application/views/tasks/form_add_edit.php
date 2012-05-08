@@ -147,8 +147,8 @@
 			<td colspan="2"><?=form_label('Asunto','subject')?><?=form_input(array('name' => 'subject', 'placeholder' => 'asunto', 'title' => 'Escriba un texto descriptivo para el asunto del TAP.', 'value' => $task['subject']))?></td>
 		</tr>
 		<tr>
-			<td><?=form_label('Prioridad','type_id')?><?=form_dropdown('type_id',$types,$task['type_id'],'id="type_id"');?></td>
 			<td><?=form_label('Categoría','tag_id')?><?=form_dropdown('tag_id',$cat,$task['tag_id'],'id="tag_id"');?></td>
+			<td><?=form_label('Prioridad','type_id')?><?=form_dropdown('type_id',$types,$task['type_id'],'id="type_id"');?></td>
 		</tr>
 		<tr>
 			<td><?=form_label('Fecha de inicio','start_date')?><?=form_input(array('name' => 'start_date', 'placeholder' => 'fecha inicio', 'title' => 'Seleccione una fecha en el calendario para indicar la fecha de inicio del TAP.', 'value' => mdate('%d/%m/%Y',$task['start_date']), 'class' => 'date'))?></td>
