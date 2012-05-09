@@ -217,7 +217,7 @@
 				<?endforeach;?>
 			</table>
 
-			<?if(isset($pete)):?>
+			
 				<h4>Archivos adjuntos</h4>
 				<p><?=anchor('#','Crear nuevo adjunto')?></p>
 				<table>
@@ -242,7 +242,7 @@
 					</tr>
 					<?endforeach;?>
 				</table>
-			<?endif?>
+			
 		</div>
 	</div>
 </div>
