@@ -22,9 +22,6 @@
 	<script src="<?=site_url('static/js/jquery.spellcheck.js')?>" type="text/javascript"></script>
 	<script src="<?=site_url('static/js/chat.js')?>" type="text/javascript"></script>
 	<script src="<?=site_url('static/js/FusionCharts.js')?>" type="text/javascript"></script>
-	<!--[if IE 6]>
-		<script type="text/javascript" src="<?=site_url('static/js/jquery.nyroModal-ie6.js')?>"></script>
-	<![endif]-->
 	<script type="text/javascript">
 		$(document).ready(function() {
 			$('.nyroModal').nyroModal();
