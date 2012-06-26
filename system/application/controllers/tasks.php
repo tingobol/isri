@@ -266,7 +266,7 @@
 			$this->template->write_view('sidebar', 'sidebar/menu',$this->sidebar());
 			if($this->session->userdata('mode')) $this->calendar_mode($page, $m);
 			else $this->list_mode($page);
-			
+		
 			$this->template->write_view('menu', 'template',$this->mensajes());
 			$this->template->render();
 		}
@@ -293,7 +293,7 @@
 								->where_related_role('id <',4)
 								->order_by('type_id ASC, end_date ASC')
 								->get_paged_iterated($page,20);
-			
+
 			$tags = new Tag();
 			$data['tags'] = $tags->select('id,tag')->order_by('tag')->get_iterated();
 			
@@ -486,13 +486,15 @@
 		{
 			$this->load->helper('date');
 			$this->load->helper('text');
+
 			$task = new Task();
 			$t = $data['task'] = $task->where('slug',$slug)->get();
-			
+
 			$this->db->where('user_id',$this->session->userdata('id'))->where('task_id',$task->id)->update('roles_tasks_users',array('update'=>0));
 			
 			$r = new Recurso();
 			$data['recursos'] = $r->where('task_id',$t->id)->get();
+						
 			
 			$data['tr'] = $this->db
 				->select('read,update,role_id')
@@ -505,28 +507,66 @@
 			$sidebar['etiquetas'] = $tags->get();
 			$data['task_sidebar'] = TRUE;
 			
-			$prev = new Task();
-			$data['prev'] = $prev->where('id >',$task->id)
-							->where('status_id !=',4)
-							->where_related_recurso('user_id',$this->session->userdata('id'))
-							->where_related_recurso('role_id <',4)
-							->where_related_recurso('read',1)
-							->order_by('type_id ASC, end_date ASC')
-							->limit(1)->get();
+			//$prev = new Task();
 			
-			$next = new Task();
-			$data['next'] = $next->where('id <',$task->id)
-							->where('status_id !=',4)
-							->where_related_recurso('user_id',$this->session->userdata('id'))
-							->where_related_recurso('role_id <',4)
-							->where_related_recurso('read',1)
-							->order_by('type_id ASC, end_date ASC')
-							->limit(1)->get();
+			//$data['prev'] = $prev->where('id >',$task->id)
+			//				->where('status_id !=',4)
+			//				->where_related_recurso('user_id',$this->session->userdata('id'))
+			//				->where_related_recurso('role_id <',4)
+			//				->where_related_recurso('read',1)
+			//				->order_by('type_id ASC, end_date ASC')
+			//				->limit(1)->get();
 			
+			
+			$data['prev'] = $this->db
+				->select('tasks.slug')
+				->from('tasks')
+				->join('tasks as t2','tasks.user_id = t2.user_id','left outer')
+				->join('roles_tasks_users','tasks.id = roles_tasks_users.task_id','left outer')
+				->where('t2.end_date > tasks.end_date')
+				->where('tasks.status_id !=',4)
+				->where('roles_tasks_users.user_id',$this->session->userdata('id'))
+				->where('roles_tasks_users.role_id <',4)
+				->where('roles_tasks_users.read',1)
+				->where('t2.id',$task->id)
+				->order_by('tasks.type_id', 'ASC')
+				->order_by('tasks.end_date', 'DESC')
+				->limit(1)
+				->get()
+				->row();
+			
+			//$next = new Task();
+			//$data['next'] = $next->where('id <',$task->id)
+			//				->where('status_id !=',4)
+			//				->where_related_recurso('user_id',$this->session->userdata('id'))
+			//				->where_related_recurso('role_id <',4)
+			//				->where_related_recurso('read',1)
+			//				->order_by('type_id ASC, end_date ASC')
+			//				->limit(1)->get();
+						
+						
+			$data['next'] = $this->db
+				->select('tasks.slug')
+				->from('tasks')
+				->join('tasks as t2','tasks.user_id = t2.user_id','left outer')
+				->join('roles_tasks_users','tasks.id = roles_tasks_users.task_id','left outer')
+				->where('t2.end_date < tasks.end_date')
+				->where('tasks.status_id !=',4)
+				->where('roles_tasks_users.user_id',$this->session->userdata('id'))
+				->where('roles_tasks_users.role_id <',4)
+				->where('roles_tasks_users.read',1)
+				->where('t2.id',$task->id)
+				->order_by('tasks.type_id', 'ASC')
+				->order_by('tasks.end_date', 'ASC')
+				->limit(1)
+				->get()
+				->row();
+
 			$this->template->write_view('content', 'tasks/view',$data);
 			$this->template->write_view('menu', 'template',$this->mensajes());
 			$this->template->write_view('sidebar', 'sidebar/menu',$this->sidebar());
 			$this->template->render();
+
 		}
 		
 		function marcar($marca,$task)
@@ -623,6 +663,7 @@
 		
 		function save_task($id = FALSE, $dependency = FALSE)
 		{
+			
 			if($_POST['end_date']) {
 				$end_date = explode('/', $_POST['end_date']);
 				$end = $end_date[2]."-".$end_date[1]."-".$end_date[0]." ".$_POST['end_hour'];
@@ -634,7 +675,8 @@
 			}
 			
 			if($id)
-			{				
+			{
+
 				$task = new Task($id);
 				
 				$_POST['end_date'] = $end;
@@ -667,7 +709,8 @@
 				}
 			}
 			else
-			{				
+			{	
+			
 				$task = new Task();
 				
 				$_POST['end_date'] = $end;
@@ -704,6 +747,7 @@
 					}
 					else
 					{
+						
 						$task->save();
 						$query = $this->db->query('SELECT LAST_INSERT_ID()');
 						$row = $query->row_array();

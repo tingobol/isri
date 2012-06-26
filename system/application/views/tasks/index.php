@@ -72,7 +72,21 @@
 			<!--<td><?=timespan($t->start_date)?></td>-->
 			<td>
 				<?php if($t->end_date < time()):?>
-					Vencida
+				<?php
+				//echo time().' '; echo $t->end_date . ' ';
+                    $diff = round((time() - $t->end_date) / (60*60*24),1);
+					//echo $diff;
+                    if(strstr($diff,'.'))
+                    {
+                        list($days,$hours) = explode('.',$diff);
+                    }
+                    else {
+                        $hours = 0;
+                        $days = $diff;
+                    }
+ 
+                ?>             
+				<?= 'Vencida ('.$days?>d <? if($hours):?><?=$hours*.24?>hs<?php endif?><?= ')';?>
 				<?php else:?>
 					<?php
 						$diff = round(($t->end_date - time()) / (60*60*24),1);
