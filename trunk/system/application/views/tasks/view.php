@@ -3,12 +3,16 @@
 	<div class="pad">
 		<h2><?=strtoupper($task->subject)?>
 			<span id="b">
-				<?php if($next->slug):?>
-				<?=anchor('tasks/view/'.$next->slug, img('static/img/white/arrow_right.png'),'class="tipns" title="Tap siguiente"')?>
-				<?php endif?>
-				<?php if($prev->slug):?>
-				<?=anchor('tasks/view/'.$prev->slug, img('static/img/white/arrow_left.png'),'class="tipns" title="Tap anterior"')?>			
-				<?php endif?>
+            	<?php if($next):?>
+					<?php if($next->slug):?>
+                    <?=anchor('tasks/view/'.$next->slug, img('static/img/white/arrow_right.png'),'class="tipns" title="Tap siguiente"')?>
+                    <?php endif?>
+                <?php endif?>    
+            	<?php if($prev):?>                
+					<?php if($prev->slug):?>
+                    <?=anchor('tasks/view/'.$prev->slug, img('static/img/white/arrow_left.png'),'class="tipns" title="Tap anterior"')?>			
+                    <?php endif?>
+                <?php endif?>                        
 				<?php if($tr):?>
 					<?php if($tr->read):?>
 						<?=anchor('tasks/marcar/0/'.$task->id, img('static/img/white/round.png'),'class="tipns" title="Marcar como leida"')?>
