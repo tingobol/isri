@@ -85,8 +85,8 @@
                         $days = $diff;
                     }
  
-                ?>             
-				<?= 'Vencida ('.$days?>d <? if($hours):?><?=$hours*.24?>hs<?php endif?><?= ')';?>
+                ?>
+                Vencida&nbsp;<span class="days">(<?=$days?>d <? if($hours):?><?=$hours*.24?>hs<?php endif?>)</span>             				
 				<?php else:?>
 					<?php
 						$diff = round(($t->end_date - time()) / (60*60*24),1);
