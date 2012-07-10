@@ -271,6 +271,48 @@
 			$this->template->render();
 		}
 		
+		function trash($page = NULL)
+		{
+			$this->template->write_view('sidebar', 'sidebar/menu',$this->sidebar());
+			
+			$this->load->helper('date');
+			$this->load->helper('text');
+			
+			$tasks = new Task();
+			$data['tasks'] = $tasks			
+								->distinct()
+								->where('deleted =',1)
+								//->where_related_user('id',$this->session->userdata('id'))
+								->where_related_role('id <',4)
+								->order_by('type_id ASC, end_date ASC')
+								->get_paged_iterated($page,20);
+
+
+			$tags = new Tag();
+			$data['tags'] = $tags->select('id,tag')->order_by('tag')->get_iterated();
+			
+			$role = new Role();
+			$data['roles'] = $role->select('id,role')->order_by('role')->get_iterated();
+			
+			$user = new User();
+			$data['users'] = $user->select('id,name')->order_by('name')->get_iterated();
+			
+			$types = new Type();
+			$data['types'] = $types->select('id,type')->order_by('type')->get_iterated();
+			
+			$status = new Status();
+			$data['status'] = $status->select('id,status')->order_by('status')->get_iterated();
+			
+			$branches = new Branch();
+			$data['branches'] = $branches->select('id,name')->order_by('name')->get_iterated();
+			
+			$this->template->write_view('menu', 'template',$this->mensajes());
+			$this->template->write_view('content', 'tasks/index',$data);
+			//$this->template->write_view('menu', 'template',$this->mensajes());
+			$this->template->render();
+			
+		}
+		
 		function switch_mode($mode)
 		{
 			if($mode == "list")
@@ -326,15 +368,23 @@
 			{
 				$tasks->where_related_user('id',$this->input->post('user_id'));
 			}
+			elseif(!$this->session->userdata('admin'))
+			{
+				$tasks->where_related_user('id',$this->session->userdata('id'));	
+			}
+			/*
 			else
 			{
 				$tasks->where_related_user('id',$this->session->userdata('id'));
 			}
+			*/
 			if($this->input->post('role_id') != 0) $tasks->where_related_recurso('role_id',$this->input->post('role_id'));
 			if($this->input->post('status_id') != 0) $tasks->where('status_id',$this->input->post('status_id'));
 			if($this->input->post('type_id') != 0) $tasks->where('type_id',$this->input->post('type_id'));
 			if($this->input->post('tag_id') != 0) $tasks->where('tag_id',$this->input->post('tag_id'));
 			if($this->input->post('branch_id') != 0) $tasks->where('branch_id',$this->input->post('branch_id'));
+			
+			$tasks->where('deleted',0);
 			
 			$tasks->get();
 			
@@ -576,13 +626,42 @@
 		}
 		
 		function delete_task($task)
-		{
-			$this->db->where('tasks.id',$task)->delete('tasks');
-			$this->db->where('tags_tasks.task_id',$task)->delete('tags_tasks');
-			$this->db->where('roles_tasks_users.task_id',$task)->delete('roles_tasks_users');
+		{						
+			//$this->db->where('tasks.id',$task)->delete('tasks');			
+			//$this->db->where('tags_tasks.task_id',$task)->delete('tags_tasks');
+			//$this->db->where('roles_tasks_users.task_id',$task)->delete('roles_tasks_users');
+			
+			//$this->session->set_flashdata('msg','<p class="success">La TAP fue eliminada con éxito.</p>');
+			
+			$this->db->where('tasks.id',$task)->update('tasks',array('deleted'=>1));
 			$this->session->set_flashdata('msg','<p class="success">La TAP fue eliminada con éxito.</p>');
 			redirect('tasks');
 		}
+		
+		function end_task($task)
+		{									
+			$this->db->where('tasks.id',$task)->update('tasks',array('status_id'=>4, 'completed' => mdate('%Y-%m-%d %H:%i')));
+			$this->session->set_flashdata('msg','<p class="success">La TAP fue finalizada con éxito.</p>');
+			redirect('tasks');
+		}
+		
+		function recover_task($task)
+		{						
+			
+			$this->db->where('tasks.id',$task)->update('tasks',array('deleted'=>0));
+			$this->session->set_flashdata('msg','<p class="success">La TAP fue recuperada con éxito.</p>');
+			redirect('tasks');
+		}		
+		
+		function drop_task($task)
+		{						
+			$this->db->where('tasks.id',$task)->delete('tasks');			
+			$this->db->where('tags_tasks.task_id',$task)->delete('tags_tasks');
+			$this->db->where('roles_tasks_users.task_id',$task)->delete('roles_tasks_users');
+			
+			$this->session->set_flashdata('msg','<p class="success">La TAP fue eliminada con éxito.</p>');			
+			redirect('tasks');
+		}		
 		
 		function add_comment($task)
 		{

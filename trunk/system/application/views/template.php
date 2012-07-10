@@ -136,6 +136,7 @@
 				<li><?=anchor('tags/admin_tags',img('static/img/white/tag.png').' Categorías','class="nyroModal tipns" title="Presione aquí para agregar, modificar y eliminar categorías."')?></li>
 				<li><?=anchor('users/admin',img('static/img/white/users.png').' Usuarios','class="tipns nyroModal" title="Administrar usuarios."')?></li>
 				<li><?=anchor('branches/admin_branches',img('static/img/white/globe_2.png').' Sucursales','class="tipns nyroModal" title="Administrar sucursales."')?></li>
+                <li><?=anchor('tasks/trash',img('static/img/white/trash.png').' Papelera','class="tipns" title="Administrar TAPs eliminadas."')?></li>
 				<?endif?>
 			</ul>
 			<ul class="user">

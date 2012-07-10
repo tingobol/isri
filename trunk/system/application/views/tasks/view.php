@@ -21,9 +21,21 @@
 					<?php endif?>
 				<?php endif?>
 				<?if(($this->session->userdata('admin'))):?>
-					<?=anchor('tasks/add_edit/'.$task->id, img('static/img/white/pencil.png'),'class="modal tipns" title="Editar esta TAP"')?>
-					<?=anchor('tasks/delete_task/'.$task->id, img('static/img/white/trash.png'),'class="tipns" title="Eliminar esta TAP" onClick="return confirm(\'¿Está seguro de eliminar este TAP?\')"')?>
+					<?=anchor('tasks/add_edit/'.$task->id, img('static/img/white/pencil.png'),'class="modal tipns" title="Editar esta TAP"')?>					
 				<?endif?>
+				<?if(($task->status_id) == 4):?>
+                	<?if(($this->session->userdata('admin'))):?>
+                    	<?if(($task->deleted) == 0):?>
+						<?=anchor('tasks/delete_task/'.$task->id, img('static/img/white/trash.png'),'class="tipns" title="Eliminar esta TAP" onClick="return confirm(\'¿Está seguro de eliminar este TAP?\')"')?>
+                        <?else :?>
+						<?=anchor('tasks/drop_task/'.$task->id, img('static/img/white/trash.png'),'class="tipns" title="Eliminar definitivamente esta TAP" onClick="return confirm(\'¿Está seguro de eliminar definitivamente este TAP?\')"')?>                        
+                        <?=anchor('tasks/recover_task/'.$task->id, img('static/img/white/redo.png'),'class="tipns" title="Recuperar esta TAP" onClick="return confirm(\'¿Está seguro de restaurar este TAP?\')"')?>                        
+
+                        <?endif?>
+                    <?endif?>
+                <?else :?>
+				<?=anchor('tasks/end_task/'.$task->id, img('static/img/white/flag.png'),'class="tipns" title="Finalizar esta TAP" onClick="return confirm(\'¿Está seguro de finalizar este TAP?\')"')?>                                
+				<?endif?>                               
 			</span>
 		</h2>
 		<p><?=anchor('tasks/view/'.$task->slug,site_url('tasks/view/'.$task->slug))?></p>
