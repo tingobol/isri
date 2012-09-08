@@ -91,7 +91,7 @@
 						<th class="right">Restante</th>
 					</tr>
 					<?foreach($task->relatedtask as $t):?>
-					<?if(($t->user_id == $this->session->userdata('id')) OR ($this->session->userdata('admin'))):?>
+					<? /*if(($t->user_id == $this->session->userdata('id')) OR ($this->session->userdata('admin'))):*/?>
 					<tr>
 						<td class="status">
 							<span class="<?=$t->status->status?>"><?=$t->status->status?></span>
@@ -101,7 +101,7 @@
 						</td>
 						<td class="right"><?=timespan(time(),$t->end_date)?></td>
 					</tr>
-					<?php endif?>					
+					<?php /*endif*/?>					
 					<?endforeach;?>
 				</table>
 			<?else:?>
