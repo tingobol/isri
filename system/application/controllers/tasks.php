@@ -78,7 +78,9 @@
 										
 			$t = new Task();
 			$sidebar['otros'] = $t->query('SELECT * FROM tasks WHERE id NOT IN (SELECT task_id FROM roles_tasks_users WHERE user_id = ?)',$uid)->count();
-									
+
+			$sidebar['papelera'] = $t->query('SELECT * FROM tasks where status_id = 4 And user_id = ?',$uid)->count();
+			
 			$active = $this->db->select('user_data')
 											->from('ci_sessions')
 											->where('user_data !=','')
@@ -151,6 +153,10 @@
 					break;
 				case 'otros':
 					$data['tasks'] = $t->query('SELECT * FROM tasks WHERE user_id != '.$uid.' AND id NOT IN (SELECT task_id FROM roles_tasks_users WHERE user_id = '.$uid.')')->get_paged_iterated($page,20);
+					break;
+					
+				case 'papelera':
+					$data['tasks'] = $t->query('SELECT * FROM tasks where status_id = 4 And user_id ='.$uid)->get_paged_iterated($page,20);
 					break;
 			}
 			$tags = new Tag();
@@ -230,6 +236,9 @@
 											
 			$t = new Task();
 			$update['otros'] = $t->query('SELECT * FROM tasks WHERE id NOT IN (SELECT task_id FROM roles_tasks_users WHERE user_id = ?)',$uid)->count();
+			
+			$t = new Task();
+			$sidebar['papelera'] = $t->query('SELECT * FROM tasks where status_id = 4 And user_id = ?',$uid)->count();
 										
 			echo $update = json_encode($update);
 		}
@@ -387,10 +396,11 @@
 			$tasks->where('deleted',0);
 			
 			$tasks->get();
-			
+			echo '<form action="'.site_url('tasks/delete_masive_task').'" method="post" id="">';
 			echo "<table>";
 			echo "<tr>";
-			echo '<th colspan="3">'.img('static/img/icon/info.png')." TAP</th>";
+			echo '<th><button type="submit"><img src="'.site_url('static/img/icon/trash.png').'" /></button></th>';			
+			echo '<th colspan="3">'.img('static/img/icon/info.png')." TAP</th>";	
 			echo "<th>".img('static/img/icon/fire.png')." Prio.</th>";
 			echo "<th>".img('static/img/icon/clock.png')." Transcurrido</th>";
 			echo "<th>".img('static/img/icon/clock.png')." Restante</th>";
@@ -398,6 +408,10 @@
 			echo "</tr>";
 			foreach($tasks as $t) {
 				echo "<tr>";
+        		echo '<td class="status">';                              
+                if(($t->status_id) == 4)
+					echo form_checkbox('end'.$t->id, $t->id);
+				echo '</td>';				
 				echo '<td class="status">';
 				echo anchor('tasks/tag/'.$t->tag->slug,$t->tag->tag,'class="tag"');
 				echo "</td>";
@@ -452,6 +466,7 @@
 				echo "</tr>";
 			}
 			echo "</table>";
+			echo "</form>";
 		}
 		
 		function calendar_mode($y = FALSE, $m = FALSE)
@@ -660,6 +675,15 @@
 			$this->db->where('roles_tasks_users.task_id',$task)->delete('roles_tasks_users');
 			
 			$this->session->set_flashdata('msg','<p class="success">La TAP fue eliminada con éxito.</p>');			
+			redirect('tasks');
+		}	
+		
+		function delete_masive_task()
+		{												
+			//print_r($_POST);
+			foreach($_POST as $task){
+				$this->db->where('tasks.id',$task)->update('tasks',array('deleted'=>1));
+			}
 			redirect('tasks');
 		}		
 		
@@ -953,5 +977,6 @@
 			$this->db->delete('roles_tasks_users');
 			redirect('tasks/add_roles/'.$task);
 		}
+
 		
 	}
