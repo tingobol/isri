@@ -91,6 +91,7 @@
 						<th class="right">Restante</th>
 					</tr>
 					<?foreach($task->relatedtask as $t):?>
+                    
 					<? /*if(($t->user_id == $this->session->userdata('id')) OR ($this->session->userdata('admin'))):*/?>
 					<tr>
 						<td class="status">

@@ -11,6 +11,7 @@
 		<li><?=anchor('tasks/notify/all','todas')?></a> <span id="all"><?=$all?></span></li>
 		<?php if($this->session->userdata('admin')):?>
 			<li><?=anchor('tasks/notify/otros','todas de otros')?></a> <span id="otros"><?=$otros?></span></li>
+            <li><?=anchor('tasks/trash','papelera')?></a> <span id="otros"><? /*$papelera*/?></span></li>
 		<?php endif?>
 	</ul>
 	<h4>Usuarios conectados</h4>

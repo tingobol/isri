@@ -48,6 +48,7 @@
 		</form>
 	</div>
 	<div id="results">
+    <form action="" method="post" id="formend">
 	<table>
 		<tr>
 			<th colspan="3"><?=img('static/img/icon/info.png')?> TAP</th>
@@ -129,6 +130,7 @@
 		</tr>
 		<?endforeach;?>
 	</table>
+    </form>
 	<?
 		switch($this->uri->segment(2))
 		{
@@ -191,8 +193,8 @@
 						$('#results').html(data);
 					}
 				});
-			})
-			
+			})		
+
 			scrollSidebar('.rightsidebar',0);
 		});
 	</script>
