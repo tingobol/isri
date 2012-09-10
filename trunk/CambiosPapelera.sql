@@ -1,3 +1,3 @@
 
 
-Alter table tasks add deleted tinyint default 0; 
+ALTER TABLE  `tasks` ADD  `deleted` TINYINT( 1 ) NOT NULL DEFAULT  '0';
