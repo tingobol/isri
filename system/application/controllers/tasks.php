@@ -33,54 +33,67 @@
 				
 			$t = new Task();
 			
-			$sidebar['nuevas'] = $t->where_related_recurso('read',1)
+			$sidebar['nuevas'] = $t->where('deleted',0)
+										->where_related_recurso('read',1)
 										->where_related_recurso('user_id',$uid)
 										->where_related_recurso('role_id <',4)
 										->count();
 
 			$t = new Task();
-			$sidebar['updates'] = $t->where_related_recurso('update',1)
+			$sidebar['updates'] = $t->where('deleted',0)
+											->where_related_recurso('update',1)
 											->where_related_recurso('user_id',$uid)
 											->where_related_recurso('role_id <',4)
 											->count();
 			
 			$t = new Task();
-			$sidebar['vencidas'] = $t->where('status_id',2)
+			$sidebar['vencidas'] = $t->where('deleted',0)
+											->where('status_id',2)
 											->where_related_recurso('user_id',$uid)
 											->where_related_recurso('role_id <',4)
 											->count();
 			
 			$t = new Task();				
-			$sidebar['postergadas'] = $t->where('status_id',3)
+			$sidebar['postergadas'] = $t->where('deleted',0)
+											->where('status_id',3)
 											->where_related_recurso('user_id',$uid)
 											->where_related_recurso('role_id <',4)
 											->count();
 			
 			$t = new Task();
-			$sidebar['complete'] = $t->where('status_id',4)
+			$sidebar['complete'] = $t->where('deleted',0)
+											->where('status_id',4)
 											->where_related_recurso('user_id',$uid)
 											->where_related_recurso('role_id <',4)
 											->count();
 			$t = new Task();
-			$sidebar['notificaciones'] = $t->where_related_recurso('user_id',$uid)
+			$sidebar['notificaciones'] = $t->where('deleted',0)
+											->where_related_recurso('user_id',$uid)
 											->where_related_recurso('role_id',4)
 											->count();
 											
 			$t = new Task();
-			$sidebar['all'] = $t->where_related_recurso('user_id',$uid)
+			$sidebar['all'] = $t->where('deleted',0)
+											->where_related_recurso('user_id',$uid)
 											->count();
 											
 			$t = new Task();
-			$sidebar['activas'] = $t->where('status_id',1)
+			$sidebar['activas'] = $t->where('deleted',0)
+										->where('status_id',1)
 										->where_related_recurso('user_id',$uid)
 										->where_related_recurso('role_id <',4)
 										->count();	
 										
 			$t = new Task();
-			$sidebar['otros'] = $t->query('SELECT * FROM tasks WHERE id NOT IN (SELECT task_id FROM roles_tasks_users WHERE user_id = ?)',$uid)->count();
+			$sidebar['otros'] = $t->query('SELECT * FROM tasks WHERE deleted = 0 And id NOT IN (SELECT task_id FROM roles_tasks_users WHERE user_id = ?)',$uid)->count();
 
-			$sidebar['papelera'] = $t->query('SELECT * FROM tasks where status_id = 4 And user_id = ?',$uid)->count();
+			$t = new Task();
 			
+			$sidebar['papelera'] = $t->where('status_id',4)
+										->where('deleted',1)
+										->where('user_id',$uid)
+										->count();						
+					
 			$active = $this->db->select('user_data')
 											->from('ci_sessions')
 											->where('user_data !=','')
@@ -106,57 +119,66 @@
 			switch($what)
 			{
 				case 'new':
-					$data['tasks'] = $t->where_related_recurso('read',1)
+					$data['tasks'] = $t->where('deleted',0)
+											->where_related_recurso('read',1)
 											->where_related_recurso('user_id',$uid)
 											->where_related_recurso('role_id <',4)
 											->get_paged_iterated($page,20);
 					break;
 				case 'activas':
-					$data['tasks'] = $t->where('status_id',1)
+					$data['tasks'] = $t->where('deleted',0)
+											->where('status_id',1)
 											->where_related_recurso('user_id',$uid)
 											->where_related_recurso('role_id <',4)
 											->get_paged_iterated($page,20);
 					break;
 				case 'updated':
-					$data['tasks'] = $t->where_related_recurso('update',1)
+					$data['tasks'] = $t->where('deleted',0)
+											->where_related_recurso('update',1)
 											->where_related_recurso('user_id',$uid)
 											->where_related_recurso('role_id <',4)
 											->get_paged_iterated($page,20);
 					break;
 				case 'due':
-					$data['tasks'] = $t->where('status_id',2)
+					$data['tasks'] = $t->where('deleted',0)
+											->where('status_id',2)
 											->where_related_recurso('user_id',$uid)
 											->where_related_recurso('role_id <',4)
 											->get_paged_iterated($page,20);
 					break;
 				case 'complete':
-					$data['tasks'] = $t->where('status_id',4)
+					$data['tasks'] = $t->where('deleted',0)
+											->where('status_id',4)
 											->where_related_recurso('user_id',$uid)
 											->where_related_recurso('role_id <',4)
 											->get_paged_iterated($page,20);
 					break;
 				case 'postponed':
-					$data['tasks'] = $t->where('status_id',3)
+					$data['tasks'] = $t->where('deleted',0)
+											->where('status_id',3)
 											->where_related_recurso('user_id',$uid)
 											->where_related_recurso('role_id <',4)
 											->get_paged_iterated($page,20);
 					break;
 				case 'notificado':
-					$data['tasks'] = $t->where_related_recurso('user_id',$uid)
+					$data['tasks'] = $t->where('deleted',0)
+											->where_related_recurso('user_id',$uid)
 											->where_related_recurso('role_id',4)
 											->get_paged_iterated($page,20);	
 					break;
 				case 'all':
-					$data['tasks'] = $t->where('status_id',1)
+					$data['tasks'] = $t->where('deleted',0)
+											->where('status_id',1)
 											->where_related_recurso('user_id',$uid)
 											->get_paged_iterated($page,20);	
 					break;
 				case 'otros':
-					$data['tasks'] = $t->query('SELECT * FROM tasks WHERE user_id != '.$uid.' AND id NOT IN (SELECT task_id FROM roles_tasks_users WHERE user_id = '.$uid.')')->get_paged_iterated($page,20);
+					$data['tasks'] = $t->query('SELECT * FROM tasks WHERE deleted = 0 And user_id != '.$uid.' AND id NOT IN (SELECT task_id FROM roles_tasks_users WHERE user_id = '.$uid.')')->get_paged_iterated($page,20);
 					break;
 					
 				case 'papelera':
-					$data['tasks'] = $t->query('SELECT * FROM tasks where status_id = 4 And user_id ='.$uid)->get_paged_iterated($page,20);
+					$data['tasks'] = $t->query('SELECT * FROM tasks where deleted = 1 And status_id = 4 And user_id ='.$uid)->get_paged_iterated($page,20);
+					
 					break;
 			}
 			$tags = new Tag();
@@ -176,7 +198,7 @@
 			
 			$branches = new Branch();
 			$data['branches'] = $branches->select('id,name')->order_by('name')->get_iterated();
-			
+			//print_r($data['tasks']);
 			$this->template->write_view('content', 'tasks/index',$data);
 			$this->template->write_view('menu', 'template',$this->mensajes());
 			$this->template->write_view('sidebar', 'sidebar/menu',$this->sidebar());
@@ -188,18 +210,21 @@
 			$uid = $this->session->userdata('id');
 			
 			$t = new Task();
-			$update['activas'] = $t->where('status_id',1)
+			$update['activas'] = $t->where('deleted',0)
+										->where('status_id',1)
 										->where_related_recurso('user_id',$uid)
 										->where_related_recurso('role_id <',4)
 										->count();
 			
 			$t = new Task();
-			$update['new'] = $t->where_related_recurso('read',1)
+			$update['new'] = $t->where('deleted',0)
+										->where_related_recurso('read',1)
 										->where_related_recurso('user_id',$uid)
 										->where_related_recurso('role_id <',4)
 										->count();
 			$t = new Task();
-			$update['updates'] = $t->where_related_recurso('update',1)
+			$update['updates'] = $t->where('deleted',0)
+											->where_related_recurso('update',1)
 											->where_related_recurso('user_id',$uid)
 											->where_related_recurso('role_id <',4)
 											->count();
@@ -210,35 +235,41 @@
 					->update('tasks', array('status_id' => 2, 'updated' => mdate('%Y-%m-%d %H:%i')));
 			
 			$t = new Task();
-			$update['vencidas'] = $t->where('status_id',2)
+			$update['vencidas'] = $t->where('deleted',0)
+											->where('status_id',2)
 											->where_related_recurso('user_id',$uid)
 											->where_related_recurso('role_id <',4)
 											->count();
 			$t = new Task();					
-			$update['postergadas'] = $t->where('status_id',3)
+			$update['postergadas'] = $t->where('deleted',0)
+											->where('status_id',3)
 											->where_related_recurso('user_id',$uid)
 											->where_related_recurso('role_id <',4)
 											->count();
 			$t = new Task();
-			$update['complete'] = $t->where('status_id',4)
+			$update['complete'] = $t->where('deleted',0)
+											->where('status_id',4)
 											->where_related_recurso('user_id',$uid)
 											->where_related_recurso('role_id <',4)
 											->count();
 											
 			$t = new Task();
-			$update['notificaciones'] = $t->where_related_recurso('role_id',4)
+			$update['notificaciones'] = $t->where('deleted',0)
+											->where_related_recurso('role_id',4)
 											->where_related_recurso('user_id',$uid)
 											->count();
 											
 			$t = new Task();
-			$update['all'] = $t->where_related_recurso('user_id',$uid)
+			$update['all'] = $t->where('deleted',0)
+											->where_related_recurso('user_id',$uid)
 											->count();
 											
 			$t = new Task();
-			$update['otros'] = $t->query('SELECT * FROM tasks WHERE id NOT IN (SELECT task_id FROM roles_tasks_users WHERE user_id = ?)',$uid)->count();
+			$update['otros'] = $t->query('SELECT * FROM tasks WHERE deleted = 0 And id NOT IN (SELECT task_id FROM roles_tasks_users WHERE user_id = ?)',$uid)->count();
 			
 			$t = new Task();
-			$sidebar['papelera'] = $t->query('SELECT * FROM tasks where status_id = 4 And user_id = ?',$uid)->count();
+			$sidebar['papelera'] = $t->query('SELECT * FROM tasks where deleted = 1 And status_id = 4 And user_id = ?',$uid)->count();
+			//$sidebar['papelera'] = $t->query('SELECT * FROM tasks where deleted = 1 And status_id = 4')->count();
 										
 			echo $update = json_encode($update);
 		}
@@ -295,8 +326,7 @@
 								->where_related_role('id <',4)
 								->order_by('type_id ASC, end_date ASC')
 								->get_paged_iterated($page,20);
-
-
+//print_r($data['tasks']);
 			$tags = new Tag();
 			$data['tags'] = $tags->select('id,tag')->order_by('tag')->get_iterated();
 			
