@@ -137,7 +137,7 @@
 			case '':
 				$url = 'tasks/index/';
 				break;
-			case 'tasks':
+			case 'index':
 				$url = 'tasks/index/';
 				break;
 			case 'trash':
