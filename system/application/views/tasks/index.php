@@ -131,15 +131,18 @@
 		<?endforeach;?>
 	</table>
     </form>
-	<?
+	<?	
 		switch($this->uri->segment(2))
 		{
 			case '':
 				$url = 'tasks/index/';
 				break;
-			case 'index':
+			case 'tasks':
 				$url = 'tasks/index/';
 				break;
+			case 'trash':
+				$url = 'tasks/trash/';
+				break;				
 			default:
 				$url = 'tasks/'.$this->uri->segment(2).'/'.$this->uri->segment(3).'/';			
 		}
@@ -153,6 +156,7 @@
 		<?endif?>
 		<?=$tasks->paged->current_page?> de <?=$tasks->paged->total_pages?>
 		<?if($tasks->paged->has_next):?>
+		
 			<a href="<?= site_url($url.$tasks->paged->next_page)?>">siguiente</a>
 			<a href="<?= site_url($url.$tasks->paged->total_pages) ?>">último ►</a>
 		<?else:?>
