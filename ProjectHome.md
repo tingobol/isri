@@ -1,0 +1,1 @@
+El sistema administra tareas, prioridades, usuarios y categorías.
